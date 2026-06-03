@@ -1,0 +1,589 @@
+<!--
+  ================================================================
+  ZAMÓWIENIE MIĘSA — Konfiguracja EmailJS
+  ================================================================
+  1. Zarejestruj się na https://emailjs.com (plan darmowy)
+  2. Utwórz Service (Gmail, Outlook itp.) → skopiuj Service ID
+  3. Utwórz szablon Email z następującymi zmiennymi:
+       {{to_email}}      — adres odbiorcy
+       {{from_name}}     — imię klienta
+       {{from_email}}    — email klienta
+       {{phone}}         — telefon klienta
+       {{delivery_date}} — data dostawy
+       {{order_lines}}   — lista zamówionych produktów
+       {{total_price}}   — łączna kwota
+       {{comments}}      — uwagi klienta
+  4. Uzupełnij 4 stałe w <script> na dole strony:
+       EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID,
+       EMAILJS_PUBLIC_KEY, ORDER_RECIPIENT_EMAIL
+  ================================================================
+-->
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kalkulator zamówień mięsa — wybierz produkty i wyślij zapytanie">
+<title>Zamówienie Mięsa — Kalkulator</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+:root {
+  --green: #0F6E56;
+  --green-dk: #0a5442;
+  --green-lt: #e8f5f1;
+  --green-mid: #c8e6de;
+  --border: #e2e8f0;
+  --border-2: #f0f4f8;
+  --bg: #f4f6f9;
+  --white: #ffffff;
+  --text: #1a202c;
+  --text-2: #4a5568;
+  --muted: #718096;
+  --r: 12px;
+  --r-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.05);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+a { color: var(--green); }
+input, textarea, button { font-family: inherit; }
+
+/* LAYOUT */
+.wrap { max-width: 900px; margin: 0 auto; padding: 28px 16px 56px; }
+
+/* PAGE HEADER */
+.page-hdr {
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-dk) 100%);
+  color: #fff;
+  border-radius: var(--r);
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 20px rgba(15,110,86,0.3);
+}
+.hdr-left h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.01em; }
+.hdr-left p { font-size: .85rem; opacity: .8; margin-top: 4px; }
+.hdr-badge {
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: var(--r-sm);
+  padding: 10px 20px;
+  font-size: 1.25rem;
+  font-weight: 800;
+  white-space: nowrap;
+  min-width: 100px;
+  text-align: center;
+}
+
+/* CARD */
+.card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.card-hdr { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border); background: #fafbfd; }
+.cat-icon { font-size: 1.35rem; line-height: 1; }
+.cat-title { font-weight: 700; font-size: .97rem; }
+.cat-count { margin-left: auto; font-size: .78rem; color: var(--muted); background: var(--bg); border-radius: 20px; padding: 2px 10px; }
+.cat-count.has { background: var(--green-lt); color: var(--green); font-weight: 700; }
+
+/* PRODUCT ROW */
+.prod-rows { display: flex; flex-direction: column; }
+.prod-row {
+  display: grid;
+  grid-template-columns: 1fr 42px 96px auto 82px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-2);
+  transition: background .2s cubic-bezier(.22,1,.36,1);
+}
+.prod-row:last-child { border-bottom: none; }
+.prod-row.active { background: var(--green-lt); }
+.prod-row.active .prod-name { color: var(--green); font-weight: 600; }
+
+.prod-name { font-size: .93rem; line-height: 1.3; }
+.prod-unit-lbl { font-size: .78rem; color: var(--muted); text-align: center; }
+.prod-price-lbl { font-size: .82rem; color: var(--muted); text-align: right; }
+.qty-ctl { display: flex; align-items: center; gap: 4px; justify-content: center; }
+.qbtn {
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--green);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--green);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
+  user-select: none;
+}
+.qbtn:hover { background: var(--green); color: #fff; }
+.qbtn:active { background: var(--green-dk); color: #fff; }
+.qinp {
+  width: 54px; height: 28px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+  font-size: .9rem;
+  outline: none;
+  transition: border-color .2s;
+  -moz-appearance: textfield;
+}
+.qinp::-webkit-outer-spin-button,
+.qinp::-webkit-inner-spin-button { -webkit-appearance: none; }
+.qinp:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(15,110,86,.12); }
+.prod-sub { font-size: .9rem; font-weight: 700; color: var(--green); text-align: right; }
+.prod-sub.zero { color: var(--muted); font-weight: 400; }
+
+/* SUMMARY */
+.summary-body { padding: 4px 0; }
+.summary-empty { color: var(--muted); font-size: .9rem; padding: 20px; text-align: center; }
+.sum-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border-2);
+  font-size: .9rem;
+}
+.sum-line:last-of-type { border-bottom: none; }
+.sum-line-qty { color: var(--muted); white-space: nowrap; }
+.sum-line-val { font-weight: 700; color: var(--green); white-space: nowrap; }
+.sum-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  border-top: 2px solid var(--green);
+  margin-top: 4px;
+}
+.sum-total-lbl { font-weight: 700; font-size: 1rem; }
+.sum-total-val { font-weight: 800; font-size: 1.25rem; color: var(--green); }
+
+/* CONTACT FORM */
+.contact-body { padding: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.fg { display: flex; flex-direction: column; gap: 6px; }
+.fg.full { grid-column: 1 / -1; }
+.flbl { font-size: .73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-2); }
+.req { color: var(--green); }
+.finp {
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: .93rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+  color: var(--text);
+  background: var(--white);
+}
+.finp:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(15,110,86,.1); }
+.finp::placeholder { color: #b0bec5; }
+textarea.finp { resize: vertical; min-height: 84px; line-height: 1.5; }
+
+/* SUBMIT */
+.submit-wrap { margin-top: 20px; }
+.btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-submit::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -70%;
+  width: 40%; height: 200%;
+  background: rgba(255,255,255,.25);
+  transform: skewX(-20deg);
+  transition: left .5s ease;
+}
+.btn-submit:hover:not(:disabled) { background: var(--green-dk); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,110,86,.35); }
+.btn-submit:hover:not(:disabled)::after { left: 130%; }
+.btn-submit:disabled { opacity: .55; cursor: default; transform: none; }
+.form-msg {
+  margin-top: 14px;
+  padding: 13px 18px;
+  border-radius: var(--r-sm);
+  font-size: .93rem;
+  font-weight: 600;
+  text-align: center;
+  display: none;
+}
+.form-msg.success { background: var(--green-lt); border: 1px solid var(--green); color: var(--green); display: block; }
+.form-msg.error { background: #fff5f5; border: 1px solid #e53e3e; color: #c53030; display: block; }
+
+/* FOOTER */
+.page-footer { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+/* RESPONSIVE */
+@media (max-width: 620px) {
+  .prod-row {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 6px 8px;
+    padding: 11px 14px;
+  }
+  .prod-name { grid-column: 1; grid-row: 1; font-size: .9rem; }
+  .prod-sub { grid-column: 2; grid-row: 1; font-size: .88rem; }
+  .prod-unit-lbl { grid-column: 1; grid-row: 2; text-align: left; }
+  .prod-price-lbl { display: none; }
+  .qty-ctl { grid-column: 2; grid-row: 2; justify-content: flex-end; }
+  .form-grid { grid-template-columns: 1fr; }
+  .fg.full { grid-column: span 1; }
+  .page-hdr { flex-direction: column; text-align: center; gap: 12px; }
+  .hdr-badge { font-size: 1.1rem; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <div class="page-hdr">
+    <div class="hdr-left">
+      <h1>🥩 Zamówienie Mięsa</h1>
+      <p>Wybierz produkty, podaj ilości i wyślij zapytanie</p>
+    </div>
+    <div class="hdr-badge" id="headerTotal">0 zł</div>
+  </div>
+
+  <!-- CATALOG (rendered by JS) -->
+  <div id="catalog"></div>
+
+  <!-- SUMMARY -->
+  <div class="card" id="summaryCard">
+    <div class="card-hdr">
+      <span class="cat-icon">📋</span>
+      <span class="cat-title">Podsumowanie zamówienia</span>
+    </div>
+    <div class="summary-body">
+      <div id="summaryItems"><p class="summary-empty">Nie wybrano żadnych produktów.</p></div>
+      <div class="sum-total-row">
+        <span class="sum-total-lbl">Łącznie:</span>
+        <span class="sum-total-val" id="summaryTotal">0 zł</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT FORM -->
+  <div class="card">
+    <div class="card-hdr">
+      <span class="cat-icon">👤</span>
+      <span class="cat-title">Dane kontaktowe</span>
+    </div>
+    <div class="contact-body">
+      <div class="form-grid">
+        <div class="fg">
+          <label class="flbl">Imię i nazwisko / firma <span class="req">*</span></label>
+          <input class="finp" id="fName" type="text" placeholder="Jan Kowalski / Firma Sp. z o.o." autocomplete="name">
+        </div>
+        <div class="fg">
+          <label class="flbl">E-mail <span class="req">*</span></label>
+          <input class="finp" id="fEmail" type="email" placeholder="jan@firma.pl" autocomplete="email">
+        </div>
+        <div class="fg">
+          <label class="flbl">Telefon</label>
+          <input class="finp" id="fPhone" type="tel" placeholder="+48 000 000 000" autocomplete="tel">
+        </div>
+        <div class="fg">
+          <label class="flbl">Data dostawy / imprezy</label>
+          <input class="finp" id="fDate" type="date">
+        </div>
+        <div class="fg full">
+          <label class="flbl">Uwagi (opcjonalnie)</label>
+          <textarea class="finp" id="fNotes" placeholder="Dodatkowe informacje, miejsce dostawy, specjalne wymagania..."></textarea>
+        </div>
+      </div>
+      <div class="submit-wrap">
+        <div class="form-msg" id="formMsg"></div>
+        <button class="btn-submit" id="btnSubmit" onclick="submitOrder()">
+          Wyślij zamówienie
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">Zamówienia realizowane przez Restaurację Trzech Braci · Cieszyn</div>
+</div>
+
+<script>
+/* ============================================================
+   EMAILJS CONFIGURATION — fill in before deployment
+   ============================================================ */
+const EMAILJS_SERVICE_ID   = 'YOUR_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID  = 'YOUR_TEMPLATE_ID';
+const EMAILJS_PUBLIC_KEY   = 'YOUR_PUBLIC_KEY';
+const ORDER_RECIPIENT_EMAIL = 'YOUR_EMAIL';
+
+/* ============================================================
+   PRODUCT CATALOG
+   ============================================================ */
+const CATALOG = [
+  {
+    cat: 'Wieprzowina', icon: '🐷',
+    items: [
+      { id: 'karkówka',   name: 'Karkówka wieprzowa', price: 28, unit: 'kg',  step: 1 },
+      { id: 'zeberka-w',  name: 'Żeberka wieprzowe',  price: 22, unit: 'kg',  step: 1 },
+      { id: 'schab',      name: 'Schab wieprzowy',     price: 32, unit: 'kg',  step: 1 },
+      { id: 'boczek',     name: 'Boczek surowy',       price: 26, unit: 'kg',  step: 1 },
+    ]
+  },
+  {
+    cat: 'Wołowina', icon: '🐄',
+    items: [
+      { id: 'poledwica',  name: 'Polędwica wołowa',    price: 95, unit: 'kg',  step: 1 },
+      { id: 'zeberka-wol',name: 'Żeberka wołowe',      price: 48, unit: 'kg',  step: 1 },
+      { id: 'cielecina',  name: 'Cielęcina (łopatka)', price: 62, unit: 'kg',  step: 1 },
+      { id: 'antrykot',   name: 'Antrykot wołowy',     price: 78, unit: 'kg',  step: 1 },
+    ]
+  },
+  {
+    cat: 'Drób', icon: '🐔',
+    items: [
+      { id: 'udo',         name: 'Udo z kurczaka',    price: 14, unit: 'kg',  step: 1 },
+      { id: 'piers',       name: 'Pierś z kurczaka',  price: 18, unit: 'kg',  step: 1 },
+      { id: 'kurczak-caly',name: 'Kurczak cały',       price: 22, unit: 'szt', step: 1   },
+      { id: 'skrzydelka',  name: 'Skrzydełka',         price: 12, unit: 'kg',  step: 1 },
+    ]
+  },
+  {
+    cat: 'Baranina', icon: '🐑',
+    items: [
+      { id: 'udziec',     name: 'Udziec barani',    price: 68, unit: 'kg', step: 1 },
+      { id: 'zeberka-bar',name: 'Żeberka baranie',  price: 58, unit: 'kg', step: 1 },
+    ]
+  }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const qty = {}; // id → quantity (number)
+const itemMeta = {}; // id → { name, price, unit, step }
+
+CATALOG.forEach(cat => {
+  cat.items.forEach(item => {
+    qty[item.id] = 0;
+    itemMeta[item.id] = item;
+  });
+});
+
+/* ============================================================
+   RENDER CATALOG
+   ============================================================ */
+function renderCatalog() {
+  const root = document.getElementById('catalog');
+  root.innerHTML = CATALOG.map(cat => `
+    <div class="card" id="cat-${cat.cat}">
+      <div class="card-hdr">
+        <span class="cat-icon">${cat.icon}</span>
+        <span class="cat-title">${cat.cat}</span>
+        <span class="cat-count" id="count-${cat.cat}">0 pozycji</span>
+      </div>
+      <div class="prod-rows">
+        ${cat.items.map(item => `
+          <div class="prod-row" id="row-${item.id}" data-id="${item.id}">
+            <span class="prod-name">${item.name}</span>
+            <span class="prod-unit-lbl">${item.unit}</span>
+            <span class="prod-price-lbl">${item.price} zł/${item.unit}</span>
+            <div class="qty-ctl">
+              <button class="qbtn" onclick="changeQty('${item.id}', -${item.step})" aria-label="Zmniejsz ilość">−</button>
+              <input class="qinp" id="inp-${item.id}" type="number"
+                min="0" step="${item.step}" value="0"
+                onchange="onInputChange('${item.id}')"
+                oninput="onInputChange('${item.id}')"
+                aria-label="${item.name} — ilość">
+              <button class="qbtn" onclick="changeQty('${item.id}', ${item.step})" aria-label="Zwiększ ilość">+</button>
+            </div>
+            <span class="prod-sub zero" id="sub-${item.id}">—</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   QTY LOGIC
+   ============================================================ */
+function changeQty(id, delta) {
+  const item = itemMeta[id];
+  const newVal = Math.max(0, +(qty[id] + delta).toFixed(2));
+  qty[id] = newVal;
+  const inp = document.getElementById(`inp-${id}`);
+  inp.value = newVal === 0 ? 0 : newVal;
+  updateRow(id);
+}
+
+function onInputChange(id) {
+  const inp = document.getElementById(`inp-${id}`);
+  const val = Math.max(0, parseFloat(inp.value) || 0);
+  qty[id] = val;
+  updateRow(id);
+}
+
+function updateRow(id) {
+  const q = qty[id];
+  const item = itemMeta[id];
+  const row  = document.getElementById(`row-${id}`);
+  const sub  = document.getElementById(`sub-${id}`);
+
+  row.classList.toggle('active', q > 0);
+
+  if (q > 0) {
+    const total = (q * item.price).toFixed(0);
+    sub.textContent = `${total} zł`;
+    sub.className = 'prod-sub';
+  } else {
+    sub.textContent = '—';
+    sub.className = 'prod-sub zero';
+  }
+
+  updateCatCount(item);
+  updateSummary();
+}
+
+function updateCatCount(item) {
+  const cat = CATALOG.find(c => c.items.some(i => i.id === item.id));
+  if (!cat) return;
+  const active = cat.items.filter(i => qty[i.id] > 0).length;
+  const el = document.getElementById(`count-${cat.cat}`);
+  el.textContent = active > 0 ? `${active} pozycj${active === 1 ? 'a' : active < 5 ? 'e' : 'i'}` : '0 pozycji';
+  el.className = `cat-count${active > 0 ? ' has' : ''}`;
+}
+
+/* ============================================================
+   SUMMARY
+   ============================================================ */
+function updateSummary() {
+  const selected = Object.entries(qty).filter(([,q]) => q > 0);
+  const total = selected.reduce((sum, [id, q]) => sum + q * itemMeta[id].price, 0);
+
+  const container = document.getElementById('summaryItems');
+  const totalEl   = document.getElementById('summaryTotal');
+  const headerEl  = document.getElementById('headerTotal');
+
+  if (selected.length === 0) {
+    container.innerHTML = '<p class="summary-empty">Nie wybrano żadnych produktów.</p>';
+  } else {
+    container.innerHTML = selected.map(([id, q]) => {
+      const item = itemMeta[id];
+      const sub = (q * item.price).toFixed(0);
+      return `
+        <div class="sum-line">
+          <span class="sum-line-name">${item.name}</span>
+          <span class="sum-line-qty">${q} ${item.unit}</span>
+          <span class="sum-line-val">${sub} zł</span>
+        </div>`;
+    }).join('');
+  }
+
+  const fmt = total.toFixed(0) + ' zł';
+  totalEl.textContent = fmt;
+  headerEl.textContent = fmt;
+}
+
+/* ============================================================
+   SUBMIT
+   ============================================================ */
+async function submitOrder() {
+  const btn = document.getElementById('btnSubmit');
+  const msg = document.getElementById('formMsg');
+
+  // Validate: at least one product
+  const selected = Object.entries(qty).filter(([,q]) => q > 0);
+  if (selected.length === 0) {
+    showMsg('Wybierz co najmniej jeden produkt przed wysłaniem.', 'error');
+    return;
+  }
+
+  // Validate: email required
+  const email = document.getElementById('fEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    showMsg('Podaj prawidłowy adres e-mail.', 'error');
+    document.getElementById('fEmail').focus();
+    return;
+  }
+
+  // Validate: name required
+  const name = document.getElementById('fName').value.trim();
+  if (!name) {
+    showMsg('Podaj imię i nazwisko lub nazwę firmy.', 'error');
+    document.getElementById('fName').focus();
+    return;
+  }
+
+  // Build order lines
+  const orderLines = selected.map(([id, q]) => {
+    const item = itemMeta[id];
+    const sub = (q * item.price).toFixed(0);
+    return `${item.name} — ${q} ${item.unit} — ${sub} zł`;
+  }).join('\n');
+
+  const total = selected.reduce((s, [id, q]) => s + q * itemMeta[id].price, 0);
+  const deliveryDate = document.getElementById('fDate').value;
+  const comments     = document.getElementById('fNotes').value.trim();
+
+  // Disable button
+  btn.disabled = true;
+  btn.textContent = 'Wysyłanie…';
+  msg.className = 'form-msg';
+  msg.style.display = 'none';
+
+  try {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      to_email:      ORDER_RECIPIENT_EMAIL,
+      from_name:     name,
+      from_email:    email,
+      phone:         document.getElementById('fPhone').value.trim() || 'Nie podano',
+      delivery_date: deliveryDate || 'Nie podano',
+      order_lines:   orderLines,
+      total_price:   total.toFixed(0) + ' zł',
+      comments:      comments || 'Brak',
+    });
+    showMsg('✓ Zamówienie wysłane! Skontaktujemy się wkrótce.', 'success');
+    btn.textContent = '✓ Wysłano';
+  } catch (err) {
+    console.error('EmailJS error:', err);
+    showMsg('Błąd wysyłki. Spróbuj ponownie lub zadzwoń do nas.', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Wyślij zamówienie';
+  }
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('formMsg');
+  el.textContent = text;
+  el.className = `form-msg ${type}`;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderCatalog();
+
+// Set min date to today
+const dateInp = document.getElementById('fDate');
+const today = new Date();
+dateInp.min = today.toISOString().split('T')[0];
+</script>
+</body>
+</html>

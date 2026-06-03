@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Restauracja Trzech Braci w Cieszynie — kuchnia polsko-austriacka, przyjęcia, wesela, noclegi. Działamy od 2002 roku.">
+<meta name="keywords" content="restauracja Cieszyn, kuchnia austriacka, wesela Cieszyn, przyjęcia, Trzech Braci">
+<title>Restauracja Trzech Braci | Cieszyn — Kuchnia Polsko-Austriacka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+<style>
+/* ===== VARIABLES ===== */
+:root {
+  --bg:        #0e1a0e;
+  --bg-2:      #1a2e1a;
+  --bg-3:      #243824;
+  --bg-4:      #2d4a2d;
+  --border:    rgba(201,168,76,0.18);
+  --text:      #f5f0e8;
+  --text-2:    rgba(245,240,232,0.65);
+  --text-3:    rgba(245,240,232,0.32);
+  --accent:    #c9a84c;
+  --accent-2:  #e8c76a;
+  --accent-rgb:201,168,76;
+  --cream:     #f5f0e8;
+  --glow:      rgba(201,168,76,0.14);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3), 0 0 0 1px rgba(201,168,76,0.06);
+  --shadow-md: 0 4px 24px rgba(0,0,0,0.4), 0 1px 3px rgba(0,0,0,0.3), 0 0 40px rgba(201,168,76,0.08);
+  --shadow-lg: 0 8px 48px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4), 0 0 80px rgba(201,168,76,0.1);
+  --r-sm: 8px; --r-md: 16px; --r-lg: 24px;
+  --font-h: 'Playfair Display', Georgia, serif;
+  --font-b: 'Lato', sans-serif;
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-size:16px;line-height:1.7;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--font-b);cursor:pointer}
+
+/* Noise overlay */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:0.022;mix-blend-mode:overlay}
+
+/* ===== NAVBAR ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;
+  padding:22px clamp(20px,5vw,80px);transition:background 0.4s cubic-bezier(0.22,1,0.36,1),padding 0.3s,border-color 0.4s;
+  border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(10,18,10,0.92);backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);padding:14px clamp(20px,5vw,80px);border-color:var(--border)}
+
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo img{height:44px;width:auto}
+.nav-logo-txt{font-family:var(--font-h);font-size:1rem;font-weight:600;color:var(--cream);line-height:1.2}
+.nav-logo-txt small{display:block;font-family:var(--font-b);font-size:0.65rem;font-weight:300;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent)}
+
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:0.78rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--text-2);
+  position:relative;transition:color 0.2s}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--accent);
+  transition:width 0.3s cubic-bezier(0.22,1,0.36,1)}
+.nav-links a:hover{color:var(--cream)}
+.nav-links a:hover::after{width:100%}
+
+.nav-cta{font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;padding:9px 22px;
+  background:transparent;border:1.5px solid var(--accent);border-radius:var(--r-sm);color:var(--accent);
+  position:relative;overflow:hidden;transition:color 0.3s}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--accent);
+  transform:translateX(-101%);transition:transform 0.3s cubic-bezier(0.22,1,0.36,1)}
+.nav-cta:hover{color:var(--bg)}
+.nav-cta:hover::before{transform:translateX(0)}
+.nav-cta span{position:relative;z-index:1}
+
+.hamburger{display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--cream);
+  transition:transform 0.3s cubic-bezier(0.22,1,0.36,1),opacity 0.2s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:translateX(-8px)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-5px)}
+
+.mob-menu{display:none;position:fixed;inset:0;z-index:999;background:rgba(8,14,8,0.97);
+  backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.mob-menu.open{display:flex}
+.mob-menu a{font-family:var(--font-h);font-size:1.9rem;font-weight:600;color:var(--cream);transition:color 0.2s}
+.mob-menu a:hover{color:var(--accent)}
+.mob-menu .mob-tel{color:var(--accent);font-family:var(--font-b);font-size:1rem;letter-spacing:0.08em}
+
+/* ===== HERO ===== */
+#hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-fallback{display:none;position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 70% at 65% 30%,rgba(201,168,76,0.18) 0%,transparent 55%),
+             radial-gradient(ellipse 80% 80% at 20% 80%,rgba(26,46,26,0.9) 0%,transparent 65%),var(--bg-2)}
+.hero-overlay{position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(14,26,14,0.25) 0%,rgba(14,26,14,0.05) 35%,rgba(14,26,14,0.55) 75%,rgba(14,26,14,0.97) 100%)}
+.hero-content{position:relative;z-index:10;text-align:center;padding:clamp(20px,5vw,100px);max-width:860px}
+
+.hero-eyebrow{font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:18px;opacity:0;transform:translateY(20px)}
+.hero-title{font-family:var(--font-h);font-size:clamp(2.6rem,6.5vw,5.8rem);font-weight:700;
+  line-height:1.08;letter-spacing:-0.025em;color:var(--cream);margin-bottom:14px;opacity:0;transform:translateY(30px)}
+.hero-title em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:clamp(0.8rem,1.8vw,1rem);letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--text-2);margin-bottom:44px;opacity:0;transform:translateY(20px)}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px)}
+
+.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;background:var(--accent);
+  color:var(--bg);font-size:0.8rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  border:none;border-radius:var(--r-sm);position:relative;overflow:hidden;
+  transition:transform 0.2s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s}
+.btn-gold::after{content:'';position:absolute;top:-50%;left:-70%;width:40%;height:200%;
+  background:rgba(255,255,255,0.28);transform:skewX(-20deg);transition:left 0.55s cubic-bezier(0.22,1,0.36,1)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,0.45)}
+.btn-gold:hover::after{left:130%}
+.btn-gold:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;background:transparent;
+  color:var(--cream);font-size:0.8rem;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;
+  border:1px solid rgba(245,240,232,0.28);border-radius:var(--r-sm);
+  transition:border-color 0.3s,background 0.3s,color 0.3s}
+.btn-outline:hover{border-color:var(--cream);background:rgba(245,240,232,0.07)}
+.btn-outline:focus-visible{outline:2px solid var(--cream);outline-offset:3px}
+
+.scroll-ind{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;opacity:0;
+  color:var(--text-3);font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase}
+.scroll-ind svg{width:18px;height:18px;animation:bounce 1.8s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* ===== SECTION COMMONS ===== */
+.sec-label{font-size:0.68rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sec-title{font-family:var(--font-h);font-size:clamp(1.9rem,4vw,3rem);font-weight:700;
+  line-height:1.14;letter-spacing:-0.022em;color:var(--cream);margin-bottom:18px}
+.sec-title em{font-style:italic;color:var(--accent)}
+.sec-body{font-size:0.97rem;line-height:1.82;color:var(--text-2);max-width:540px}
+.divider{width:52px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:22px 0}
+
+/* data-reveal base */
+[data-reveal]{opacity:0;transform:translateY(30px);
+  transition:opacity 0.85s cubic-bezier(0.22,1,0.36,1),transform 0.85s cubic-bezier(0.22,1,0.36,1)}
+[data-reveal].vis{opacity:1;transform:none}
+[data-reveal][data-d="1"]{transition-delay:0.1s}
+[data-reveal][data-d="2"]{transition-delay:0.22s}
+[data-reveal][data-d="3"]{transition-delay:0.36s}
+[data-reveal][data-d="4"]{transition-delay:0.5s}
+
+/* ===== O NAS ===== */
+#o-nas{padding:clamp(80px,12vw,140px) clamp(20px,6vw,120px);background:var(--bg)}
+.o-nas-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(48px,8vw,100px);align-items:center}
+.o-nas-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:38px}
+.stat{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-md);padding:22px;
+  transition:border-color 0.3s,box-shadow 0.3s}
+.stat:hover{border-color:rgba(201,168,76,0.4);box-shadow:var(--shadow-sm)}
+.stat-n{font-family:var(--font-h);font-size:2.4rem;font-weight:700;color:var(--accent);line-height:1}
+.stat-l{font-size:0.78rem;color:var(--text-2);margin-top:5px;letter-spacing:0.04em}
+
+.o-nas-vis{position:relative;height:clamp(380px,48vw,580px)}
+.vis-main{position:absolute;inset:0;border-radius:var(--r-lg);overflow:hidden;
+  box-shadow:var(--shadow-lg);
+  background:linear-gradient(135deg,#1a3a1a 0%,#2d4a2d 40%,rgba(201,168,76,0.12) 100%)}
+.vis-main img{width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;opacity:0.55;
+  transition:opacity 0.5s}
+.vis-main:hover img{opacity:0.72}
+.vis-main::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 55%,rgba(14,26,14,0.75) 100%)}
+.vis-accent{position:absolute;bottom:-22px;right:-22px;width:58%;height:48%;
+  border-radius:var(--r-md);overflow:hidden;border:3px solid var(--bg);
+  background:linear-gradient(135deg,#243824,rgba(201,168,76,0.25));box-shadow:var(--shadow-lg);z-index:2}
+.vis-accent img{width:100%;height:100%;object-fit:cover;opacity:0.55}
+
+/* ===== SPECJALNOŚCI ===== */
+#spec{padding:clamp(80px,12vw,140px) clamp(20px,6vw,120px);background:var(--bg-2);position:relative;overflow:hidden}
+.spec-grid-bg{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px);
+  background-size:64px 64px;pointer-events:none}
+.spec-inner{max-width:1200px;margin:0 auto;position:relative}
+.spec-hdr{text-align:center;margin-bottom:clamp(44px,6vw,76px)}
+.spec-hdr .divider{margin:22px auto}
+
+.spec-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.spec-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:38px 30px;
+  position:relative;overflow:hidden;cursor:default;
+  transition:border-color 0.4s,box-shadow 0.4s;will-change:transform}
+.spec-card::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,168,76,0.08),transparent);opacity:0;transition:opacity 0.4s}
+.spec-card:hover{border-color:rgba(201,168,76,0.45);
+  box-shadow:0 20px 60px rgba(0,0,0,0.45),0 0 40px rgba(201,168,76,0.1)}
+.spec-card:hover::before{opacity:1}
+.spec-num{position:absolute;top:22px;right:26px;font-family:var(--font-h);font-size:3.8rem;
+  font-weight:700;color:rgba(201,168,76,0.07);line-height:1;pointer-events:none}
+.spec-icon{font-size:2.8rem;margin-bottom:22px;display:block}
+.spec-sub{font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.spec-name{font-family:var(--font-h);font-size:1.45rem;font-weight:700;color:var(--cream);margin-bottom:12px}
+.spec-txt{font-size:0.93rem;line-height:1.72;color:var(--text-2)}
+
+/* ===== MENU ===== */
+#menu{padding:clamp(80px,12vw,140px) clamp(20px,6vw,120px);background:var(--bg)}
+.menu-inner{max-width:960px;margin:0 auto}
+.menu-hdr{text-align:center;margin-bottom:clamp(44px,6vw,76px)}
+.menu-hdr .divider{margin:22px auto}
+
+.menu-cards{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.flip-wrap{perspective:1000px;height:300px}
+.flip-card{width:100%;height:100%;position:relative;transform-style:preserve-3d;
+  transition:transform 0.72s cubic-bezier(0.22,1,0.36,1);cursor:pointer}
+.flip-wrap:hover .flip-card,.flip-wrap:focus-within .flip-card{transform:rotateY(180deg)}
+.flip-face{position:absolute;inset:0;border-radius:var(--r-lg);backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;padding:36px;text-align:center}
+.flip-front{background:var(--bg-2);border:1px solid var(--border)}
+.flip-front h3{font-family:var(--font-h);font-size:1.45rem;font-weight:700;color:var(--cream);line-height:1.2}
+.flip-front p{font-size:0.85rem;color:var(--text-2)}
+.flip-front .fi{font-size:2.8rem}
+.flip-front .fi-date{font-size:0.72rem;color:var(--accent);letter-spacing:0.06em;margin-top:4px}
+.flip-back{background:linear-gradient(135deg,var(--bg-3),var(--bg-4));
+  border:1px solid rgba(201,168,76,0.45);transform:rotateY(180deg);text-decoration:none;
+  box-shadow:var(--shadow-md)}
+.flip-back-title{font-family:var(--font-h);font-size:1.7rem;font-weight:600;color:var(--accent)}
+.flip-back-sub{font-size:0.82rem;color:var(--text-2)}
+.flip-back-arrow{font-size:1.8rem;color:var(--accent);margin-top:6px;
+  transition:transform 0.2s}
+.flip-wrap:hover .flip-back-arrow{transform:translateX(4px)}
+
+/* ===== USŁUGI ===== */
+#uslugi{padding:clamp(80px,12vw,140px) 0;background:var(--bg-2);overflow:hidden}
+.uslugi-hdr{padding:0 clamp(20px,6vw,120px);margin-bottom:clamp(44px,6vw,76px)}
+.uslugi-track-wrap{overflow:hidden;padding:20px 0 4px}
+.uslugi-track{display:flex;gap:20px;padding:0 clamp(20px,6vw,120px) clamp(20px,3vw,36px);width:max-content}
+.ucard{width:clamp(250px,26vw,308px);flex-shrink:0;background:var(--bg-3);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:36px 28px;text-decoration:none;display:block;
+  transition:border-color 0.3s,transform 0.35s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s}
+.ucard:hover{border-color:rgba(201,168,76,0.4);transform:translateY(-8px);box-shadow:var(--shadow-lg)}
+.ucard:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.ucard-icon{font-size:2.4rem;margin-bottom:18px;display:block}
+.ucard-title{font-family:var(--font-h);font-size:1.35rem;font-weight:700;color:var(--cream);margin-bottom:9px}
+.ucard-txt{font-size:0.88rem;color:var(--text-2);line-height:1.64}
+.ucard-arr{margin-top:22px;display:inline-flex;align-items:center;gap:5px;
+  font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);
+  transition:gap 0.2s}
+.ucard:hover .ucard-arr{gap:10px}
+
+/* ===== GALERIA ===== */
+#galeria{padding:clamp(80px,12vw,140px) clamp(20px,6vw,120px);background:var(--bg)}
+.gal-inner{max-width:1200px;margin:0 auto}
+.gal-hdr{text-align:center;margin-bottom:clamp(44px,6vw,76px)}
+.gal-hdr .divider{margin:22px auto}
+.gal-grid{columns:3;column-gap:14px}
+.gal-item{break-inside:avoid;margin-bottom:14px;border-radius:var(--r-md);overflow:hidden;
+  cursor:zoom-in;position:relative;background:var(--bg-2);border:1px solid var(--border);
+  transition:transform 0.35s cubic-bezier(0.22,1,0.36,1),box-shadow 0.35s}
+.gal-item:hover{transform:scale(1.025);box-shadow:var(--shadow-lg)}
+.gal-item img{width:100%;height:auto;display:block;transition:opacity 0.3s}
+.gal-ph{width:100%;display:block}
+
+/* Lightbox */
+.lbox{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.94);
+  align-items:center;justify-content:center;cursor:zoom-out}
+.lbox.on{display:flex}
+.lbox-img{max-width:90vw;max-height:90vh;border-radius:var(--r-md);object-fit:contain;cursor:default;
+  box-shadow:0 0 80px rgba(0,0,0,0.8)}
+.lbox-close{position:absolute;top:22px;right:22px;width:46px;height:46px;display:flex;
+  align-items:center;justify-content:center;background:rgba(245,240,232,0.08);
+  border:1px solid rgba(245,240,232,0.18);border-radius:50%;cursor:pointer;color:var(--cream);
+  font-size:1.1rem;background-color:transparent;transition:background 0.2s,transform 0.2s}
+.lbox-close:hover{background:rgba(245,240,232,0.18);transform:scale(1.1)}
+
+/* ===== KONTAKT ===== */
+#kontakt{padding:clamp(80px,12vw,140px) clamp(20px,6vw,120px);background:var(--bg-2)}
+.kont-grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(44px,6vw,80px);align-items:start}
+.kont-map{border-radius:var(--r-lg);overflow:hidden;height:440px;
+  border:1px solid var(--border);box-shadow:var(--shadow-lg)}
+.kont-map iframe{width:100%;height:100%;border:none;filter:grayscale(30%) sepia(25%) brightness(0.9)}
+.kont-info .sec-title{font-size:clamp(1.8rem,3vw,2.4rem)}
+.kont-det{display:flex;align-items:flex-start;gap:14px;margin-bottom:22px}
+.kont-ico{width:38px;height:38px;background:rgba(201,168,76,0.08);border:1px solid var(--border);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.kont-lbl{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.kont-val{color:var(--cream);font-size:0.97rem;line-height:1.6}
+.kont-val a{transition:color 0.2s}
+.kont-val a:hover{color:var(--accent)}
+.kont-btn{margin-top:28px;width:100%;padding:17px;background:var(--accent);color:var(--bg);
+  border:none;border-radius:var(--r-sm);font-size:0.85rem;font-weight:700;letter-spacing:0.12em;
+  text-transform:uppercase;position:relative;overflow:hidden;
+  transition:transform 0.2s cubic-bezier(0.22,1,0.36,1),box-shadow 0.3s}
+.kont-btn::after{content:'';position:absolute;top:-50%;left:-70%;width:40%;height:200%;
+  background:rgba(255,255,255,0.28);transform:skewX(-20deg);transition:left 0.55s cubic-bezier(0.22,1,0.36,1)}
+.kont-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,0.42)}
+.kont-btn:hover::after{left:130%}
+.kont-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* ===== MODAL ===== */
+.modal-ov{display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.72);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px}
+.modal-ov.on{display:flex}
+.modal{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:clamp(28px,5vw,52px);width:100%;max-width:510px;position:relative;
+  box-shadow:var(--shadow-lg);animation:mIn 0.42s cubic-bezier(0.22,1,0.36,1)}
+@keyframes mIn{from{opacity:0;transform:translateY(22px) scale(0.97)}to{opacity:1;transform:none}}
+.modal-x{position:absolute;top:18px;right:18px;width:34px;height:34px;
+  background:transparent;border:1px solid var(--border);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  color:var(--text-2);font-size:0.95rem;transition:background 0.2s,color 0.2s}
+.modal-x:hover{background:rgba(245,240,232,0.1);color:var(--cream)}
+.modal h2{font-family:var(--font-h);font-size:1.75rem;font-weight:700;color:var(--cream);margin-bottom:6px}
+.modal-sub{font-size:0.87rem;color:var(--text-2);margin-bottom:28px}
+.fg{margin-bottom:18px}
+.flbl{display:block;font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.finp{width:100%;padding:13px 15px;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:var(--r-sm);color:var(--cream);font-size:0.97rem;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;font-family:var(--font-b)}
+.finp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,0.14)}
+.finp::placeholder{color:var(--text-3)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modal-sub-btn{width:100%;padding:15px;background:var(--accent);color:var(--bg);border:none;
+  border-radius:var(--r-sm);font-size:0.87rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  margin-top:6px;transition:transform 0.2s,box-shadow 0.3s}
+.modal-sub-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,0.42)}
+.modal-sub-btn:focus-visible{outline:2px solid var(--bg);outline-offset:2px}
+.modal-note{font-size:0.78rem;color:var(--text-3);text-align:center;margin-top:14px}
+.modal-note a{color:var(--accent);transition:opacity 0.2s}
+.modal-note a:hover{opacity:0.8}
+
+/* ===== FOOTER ===== */
+footer{background:var(--bg);border-top:1px solid var(--border);
+  padding:clamp(44px,8vw,80px) clamp(20px,6vw,120px) clamp(28px,4vw,44px)}
+.foot-inner{max-width:1200px;margin:0 auto}
+.foot-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:44px;
+  margin-bottom:44px;padding-bottom:44px;border-bottom:1px solid var(--border)}
+.foot-logo img{height:50px;margin-bottom:14px}
+.foot-brand{font-family:var(--font-h);font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:10px}
+.foot-desc{font-size:0.83rem;color:var(--text-2);line-height:1.72;max-width:270px}
+.foot-social{display:flex;gap:10px;margin-top:22px}
+.soc-lnk{width:38px;height:38px;background:rgba(201,168,76,0.07);border:1px solid var(--border);
+  border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-2);
+  transition:background 0.2s,border-color 0.2s,color 0.2s,transform 0.2s}
+.soc-lnk:hover{background:rgba(201,168,76,0.14);border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.foot-col-ttl{font-size:0.67rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-col ul a{font-size:0.88rem;color:var(--text-2);transition:color 0.2s}
+.foot-col ul a:hover{color:var(--cream)}
+.foot-col ul li.addr{font-size:0.82rem;color:var(--text-3);line-height:1.6;cursor:default}
+.foot-btm{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot-copy{font-size:0.78rem;color:var(--text-3)}
+.foot-copy em{font-style:normal;color:var(--accent)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .spec-cards{grid-template-columns:1fr 1fr}
+  .foot-top{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  .o-nas-grid{grid-template-columns:1fr}
+  .o-nas-vis{height:280px}
+  .vis-accent{display:none}
+  .spec-cards{grid-template-columns:1fr}
+  .menu-cards{grid-template-columns:1fr}
+  .flip-wrap{height:260px}
+  .kont-grid{grid-template-columns:1fr}
+  .kont-map{height:290px}
+  .gal-grid{columns:2}
+  .foot-top{grid-template-columns:1fr;gap:28px}
+  .uslugi-track{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .ucard{scroll-snap-align:start;width:78vw}
+}
+@media(max-width:480px){
+  .gal-grid{columns:1}
+  .frow{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav" id="nav">
+  <a href="#hero" class="nav-logo">
+    <img src="/images/logo_white.png" alt="Trzech Braci" onerror="this.style.display='none'">
+    <div class="nav-logo-txt">Trzech Braci <small>Restauracja · Cieszyn</small></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#o-nas">O nas</a></li>
+    <li><a href="#spec">Specjalności</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#uslugi">Usługi</a></li>
+    <li><a href="#galeria">Galeria</a></li>
+    <li><a href="#kontakt">Kontakt</a></li>
+  </ul>
+  <a href="tel:+48338581523" class="nav-cta"><span>Zadzwoń</span></a>
+  <button class="hamburger" id="ham" aria-label="Otwórz menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu" role="dialog" aria-modal="true" aria-label="Menu nawigacji">
+  <a href="#o-nas">O nas</a>
+  <a href="#spec">Specjalności</a>
+  <a href="#menu">Menu</a>
+  <a href="#uslugi">Usługi</a>
+  <a href="#galeria">Galeria</a>
+  <a href="#kontakt">Kontakt</a>
+  <a href="tel:+48338581523" class="mob-tel">+48 33 858 15 23</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-fallback" id="heroFallback"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" id="hEyebrow">Cieszyn · Polska · Od 2002 roku</p>
+    <h1 class="hero-title" id="hTitle">Restauracja<br><em>Trzech Braci</em></h1>
+    <p class="hero-sub" id="hSub">Kuchnia Polsko-Austriacka · Tradycja i Smak</p>
+    <div class="hero-btns" id="hBtns">
+      <a href="tel:+48338581523" class="btn-gold">Rezerwacja stolika</a>
+      <a href="#menu" class="btn-outline">Zobacz menu</a>
+    </div>
+  </div>
+  <div class="scroll-ind" id="scrollInd">
+    <span>Przewiń</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M19 9l-7 7-7-7"/>
+    </svg>
+  </div>
+</section>
+
+<!-- O NAS -->
+<section id="o-nas">
+  <div class="o-nas-grid">
+    <div data-reveal>
+      <p class="sec-label">O restauracji</p>
+      <h2 class="sec-title">Tradycja <em>Austro-Węgierska</em><br>w sercu Cieszyna</h2>
+      <div class="divider"></div>
+      <p class="sec-body">Restauracja Trzech Braci działa od 2002 roku przy granicy polsko-czeskiej, w malowniczym Cieszynie. Łączymy bogatą tradycję kuchni austro-węgierskiej z smakami regionalnej kuchni śląskiej, tworząc wyjątkowe doznania kulinarne dla każdego gościa.</p>
+      <p class="sec-body" style="margin-top:14px">Do dyspozycji naszych gości oddajemy dwie eleganckie sale — na 100 i 30 osób — oraz malownicze tarasy, czynne od wiosny do jesieni. Idealne miejsce na rodzinny obiad, spotkanie biznesowe czy wyjątkową uroczystość.</p>
+      <div class="o-nas-stats" data-reveal data-d="2">
+        <div class="stat"><div class="stat-n">2002</div><div class="stat-l">Rok założenia</div></div>
+        <div class="stat"><div class="stat-n">130+</div><div class="stat-l">Miejsc w restauracji</div></div>
+        <div class="stat"><div class="stat-n">2</div><div class="stat-l">Eleganckie sale</div></div>
+        <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Lokalnych składników</div></div>
+      </div>
+    </div>
+    <div class="o-nas-vis" data-reveal data-d="2">
+      <div class="vis-main">
+        <img src="/images/pgalleries/trzechbraci-restauracja-1.jpg" alt="Wnętrze restauracji Trzech Braci" loading="lazy">
+      </div>
+      <div class="vis-accent">
+        <img src="/images/pgalleries/trzechbraci-restauracja-2.jpg" alt="Restauracja Trzech Braci — detal wnętrza" loading="lazy">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECJALNOŚCI -->
+<section id="spec">
+  <div class="spec-grid-bg" aria-hidden="true"></div>
+  <div class="spec-inner">
+    <div class="spec-hdr" data-reveal>
+      <p class="sec-label">Sygnatura kuchni</p>
+      <h2 class="sec-title">Nasze <em>Specjalności</em></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-2);max-width:480px;margin:0 auto;font-size:0.97rem">Każde danie to historia — smak przekazywany z pokolenia na pokolenie, dopracowany przez ponad dwie dekady pasji.</p>
+    </div>
+    <div class="spec-cards">
+      <div class="spec-card" data-reveal data-d="1" aria-label="Sznycel 30 cm">
+        <span class="spec-num" aria-hidden="true">01</span>
+        <span class="spec-icon" aria-hidden="true">🥩</span>
+        <div class="spec-sub">Klasyk wiedeński</div>
+        <h3 class="spec-name">Sznycel 30 cm</h3>
+        <p class="spec-txt">Nasz flagowy wiener schnitzel — 30 cm chrupającej panierki, soczyste mięso cielęce, podawane z tradycyjnymi austriackimi dodatkami. Legenda wśród gości od ponad 20 lat. Przygotowywany na zamówienie, zawsze świeży.</p>
+      </div>
+      <div class="spec-card" data-reveal data-d="2" aria-label="Wędzok — ryby i wędliny">
+        <span class="spec-num" aria-hidden="true">02</span>
+        <span class="spec-icon" aria-hidden="true">🐟</span>
+        <div class="spec-sub">Własny wyrób</div>
+        <h3 class="spec-name">Wędzok</h3>
+        <p class="spec-txt">Ryby i wędliny wędzone według naszej autorskiej receptury, z aromatycznym dymem z drewien owocowych. Niepowtarzalny smak, który rozsławił nas w całym Śląsku Cieszyńskim i przyciąga smakoszy z całej Polski.</p>
+      </div>
+      <div class="spec-card" data-reveal data-d="3" aria-label="Kuchnia Regionalna">
+        <span class="spec-num" aria-hidden="true">03</span>
+        <span class="spec-icon" aria-hidden="true">🍲</span>
+        <div class="spec-sub">Sezonowe menu</div>
+        <h3 class="spec-name">Kuchnia Regionalna</h3>
+        <p class="spec-txt">Śląskie tradycje na talerzu — kluski śląskie, żur, rolada wołowa — przygotowane ze świeżych, lokalnych składników. Menu zmienia się wraz z porami roku, by zawsze serwować to, co najsmaczniejsze i najświeższe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="menu-inner">
+    <div class="menu-hdr" data-reveal>
+      <p class="sec-label">Do pobrania</p>
+      <h2 class="sec-title">Nasze <em>Menu</em></h2>
+      <div class="divider"></div>
+      <p style="color:var(--text-2);max-width:460px;margin:0 auto;font-size:0.95rem">Najedź na kartę, by ją odwrócić i pobrać aktualną wersję w formacie PDF.</p>
+    </div>
+    <div class="menu-cards">
+      <div class="flip-wrap" data-reveal data-d="1" tabindex="0" role="link" aria-label="Otwórz menu główne PDF">
+        <div class="flip-card">
+          <div class="flip-face flip-front">
+            <span class="fi" aria-hidden="true">📋</span>
+            <h3>Menu Główne</h3>
+            <p>Pełna oferta dań, napojów i deserów</p>
+            <p class="fi-date">Aktualizacja: Styczeń 2024</p>
+          </div>
+          <a href="/files/trzechbraci-restauracja-menu-012024.pdf" class="flip-face flip-back" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+            <div class="flip-back-title">Menu główne</div>
+            <div class="flip-back-sub">Plik PDF · Pobierz lub otwórz</div>
+            <div class="flip-back-arrow">→</div>
+          </a>
+        </div>
+      </div>
+      <div class="flip-wrap" data-reveal data-d="2" tabindex="0" role="link" aria-label="Otwórz menu sezonowe PDF">
+        <div class="flip-card">
+          <div class="flip-face flip-front">
+            <span class="fi" aria-hidden="true">🍂</span>
+            <h3>Menu Sezonowe</h3>
+            <p>Specjalności jesienno-zimowe</p>
+            <p class="fi-date">Aktualizacja: Październik 2024</p>
+          </div>
+          <a href="/files/trzechbraci-restauracja-menu-sezonowe-102024.pdf" class="flip-face flip-back" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
+            <div class="flip-back-title">Menu sezonowe</div>
+            <div class="flip-back-sub">Plik PDF · Pobierz lub otwórz</div>
+            <div class="flip-back-arrow">→</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USŁUGI -->
+<section id="uslugi">
+  <div class="uslugi-hdr" data-reveal>
+    <p class="sec-label">Co oferujemy</p>
+    <h2 class="sec-title">Nasze <em>Usługi</em></h2>
+  </div>
+  <div class="uslugi-track-wrap">
+    <div class="uslugi-track" id="uslugiTrack">
+      <a href="restauracja.html" class="ucard">
+        <span class="ucard-icon" aria-hidden="true">🍽️</span>
+        <div class="ucard-title">Restauracja</div>
+        <p class="ucard-txt">Kuchnia polsko-austriacka w eleganckim wnętrzu. Dwie sale, tarasy sezonowe, smak, który zostaje w pamięci.</p>
+        <div class="ucard-arr" aria-hidden="true">Dowiedz się więcej →</div>
+      </a>
+      <a href="noclegi.html" class="ucard">
+        <span class="ucard-icon" aria-hidden="true">🛏️</span>
+        <div class="ucard-title">Noclegi</div>
+        <p class="ucard-txt">Komfortowe pokoje w spokojnej okolicy przy granicy polsko-czeskiej. Idealne dla turystów i gości.</p>
+        <div class="ucard-arr" aria-hidden="true">Dowiedz się więcej →</div>
+      </a>
+      <a href="przyjecia.html" class="ucard">
+        <span class="ucard-icon" aria-hidden="true">🥂</span>
+        <div class="ucard-title">Przyjęcia</div>
+        <p class="ucard-txt">Organizacja uroczystości rodzinnych i firmowych dla 20–130 gości. Kompleksowa obsługa i dekoracje.</p>
+        <div class="ucard-arr" aria-hidden="true">Dowiedz się więcej →</div>
+      </a>
+      <a href="wesela.html" class="ucard">
+        <span class="ucard-icon" aria-hidden="true">💍</span>
+        <div class="ucard-title">Wesela</div>
+        <p class="ucard-txt">Niezapomniany dzień ślubu w wyjątkowej atmosferze Trzech Braci. Indywidualne podejście do każdej pary.</p>
+        <div class="ucard-arr" aria-hidden="true">Dowiedz się więcej →</div>
+      </a>
+      <a href="catering.html" class="ucard">
+        <span class="ucard-icon" aria-hidden="true">🚐</span>
+        <div class="ucard-title">Catering</div>
+        <p class="ucard-txt">Profesjonalny catering wyjazdowy na imprezy, eventy firmowe i uroczystości w dowolnym miejscu.</p>
+        <div class="ucard-arr" aria-hidden="true">Dowiedz się więcej →</div>
+      </a>
+      <a href="wycieczki.html" class="ucard">
+        <span class="ucard-icon" aria-hidden="true">🗺️</span>
+        <div class="ucard-title">Wycieczki</div>
+        <p class="ucard-txt">Turystyka kulinarna i organizacja wycieczek po urokliwym Śląsku Cieszyńskim i okolicach Cieszyna.</p>
+        <div class="ucard-arr" aria-hidden="true">Dowiedz się więcej →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section id="galeria">
+  <div class="gal-inner">
+    <div class="gal-hdr" data-reveal>
+      <p class="sec-label">Zajrzyj do nas</p>
+      <h2 class="sec-title">Nasza <em>Galeria</em></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="gal-grid" id="galGrid">
+      <div class="gal-item" data-reveal data-d="1" data-lb="/images/pgalleries/trzechbraci-restauracja-1.jpg" tabindex="0" role="button" aria-label="Powiększ zdjęcie — sala główna">
+        <img src="/images/pgalleries/trzechbraci-restauracja-1.jpg" alt="Restauracja Trzech Braci — sala główna" loading="lazy">
+        <canvas class="gal-ph" width="400" height="300" data-ph="0" style="display:none"></canvas>
+      </div>
+      <div class="gal-item" data-reveal data-d="2" data-lb="/images/pgalleries/trzechbraci-restauracja-2.jpg" tabindex="0" role="button" aria-label="Powiększ zdjęcie — wnętrze" style="margin-top:40px">
+        <img src="/images/pgalleries/trzechbraci-restauracja-2.jpg" alt="Restauracja Trzech Braci — eleganckie wnętrze" loading="lazy">
+        <canvas class="gal-ph" width="400" height="480" data-ph="1" style="display:none"></canvas>
+      </div>
+      <div class="gal-item" data-reveal data-d="3" data-lb="/images/pgalleries/trzechbraci-restauracja-3.jpg" tabindex="0" role="button" aria-label="Powiększ zdjęcie — taras">
+        <img src="/images/pgalleries/trzechbraci-restauracja-3.jpg" alt="Restauracja Trzech Braci — taras sezonowy" loading="lazy">
+        <canvas class="gal-ph" width="400" height="270" data-ph="2" style="display:none"></canvas>
+      </div>
+      <div class="gal-item" data-reveal data-d="1" data-lb="/images/pgalleries/trzechbraci-restauracja-4.jpg" tabindex="0" role="button" aria-label="Powiększ zdjęcie — kuchnia" style="margin-top:24px">
+        <img src="/images/pgalleries/trzechbraci-restauracja-4.jpg" alt="Restauracja Trzech Braci — kuchnia" loading="lazy">
+        <canvas class="gal-ph" width="400" height="400" data-ph="3" style="display:none"></canvas>
+      </div>
+      <div class="gal-item" data-reveal data-d="2" data-lb="/images/pgalleries/trzechbraci-restauracja-5.jpg" tabindex="0" role="button" aria-label="Powiększ zdjęcie — detal">
+        <img src="/images/pgalleries/trzechbraci-restauracja-5.jpg" alt="Restauracja Trzech Braci — detal" loading="lazy">
+        <canvas class="gal-ph" width="400" height="320" data-ph="4" style="display:none"></canvas>
+      </div>
+      <div class="gal-item" data-reveal data-d="3" data-lb="/images/homeslider/trzechbraci-homeslider-2022-1.jpg" tabindex="0" role="button" aria-label="Powiększ zdjęcie — ogród" style="margin-top:32px">
+        <img src="/images/homeslider/trzechbraci-homeslider-2022-1.jpg" alt="Restauracja Trzech Braci — ogród" loading="lazy">
+        <canvas class="gal-ph" width="400" height="360" data-ph="5" style="display:none"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lbox" id="lbox" role="dialog" aria-modal="true" aria-label="Podgląd zdjęcia">
+  <button class="lbox-close" id="lboxClose" aria-label="Zamknij podgląd">✕</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="Zdjęcie z galerii">
+</div>
+
+<!-- KONTAKT -->
+<section id="kontakt">
+  <div class="kont-grid">
+    <div class="kont-map" data-reveal>
+      <!-- Google Maps embed — replace pb= param with real place ID if needed -->
+      <iframe
+        src="https://maps.google.com/maps?q=ul.+Motelowa+1A+43-400+Cieszyn+Poland&output=embed&hl=pl"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Lokalizacja Restauracji Trzech Braci na mapie Google">
+      </iframe>
+    </div>
+    <div data-reveal data-d="2">
+      <p class="sec-label">Znajdź nas</p>
+      <h2 class="sec-title kont-info-h">Kontakt &amp;<br><em>Rezerwacja</em></h2>
+      <div class="divider"></div>
+      <div class="kont-det">
+        <div class="kont-ico" aria-hidden="true">📍</div>
+        <div>
+          <div class="kont-lbl">Adres</div>
+          <div class="kont-val">ul. Motelowa 1A<br>43-400 Cieszyn, Polska</div>
+        </div>
+      </div>
+      <div class="kont-det">
+        <div class="kont-ico" aria-hidden="true">📞</div>
+        <div>
+          <div class="kont-lbl">Telefon</div>
+          <div class="kont-val">
+            <a href="tel:+48338581523">+48 33 858 15 23</a><br>
+            <a href="tel:+48512484038">+48 512 484 038</a>
+          </div>
+        </div>
+      </div>
+      <div class="kont-det">
+        <div class="kont-ico" aria-hidden="true">✉️</div>
+        <div>
+          <div class="kont-lbl">E-mail</div>
+          <div class="kont-val"><a href="mailto:info@trzechbraci.pl">info@trzechbraci.pl</a></div>
+        </div>
+      </div>
+      <div class="kont-det">
+        <div class="kont-ico" aria-hidden="true">🕐</div>
+        <div>
+          <div class="kont-lbl">Godziny otwarcia</div>
+          <div class="kont-val">
+            Pon–Czw: 12:00–22:00<br>
+            Pt–Sob:&nbsp; 12:00–23:00<br>
+            Niedziela: 12:00–21:00
+          </div>
+        </div>
+      </div>
+      <button class="kont-btn" onclick="openModal()" aria-haspopup="dialog">
+        Zarezerwuj stolik
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL REZERWACJA -->
+<div class="modal-ov" id="modalOv" role="dialog" aria-modal="true" aria-labelledby="modTitle">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal()" aria-label="Zamknij formularz">✕</button>
+    <h2 id="modTitle">Rezerwacja stolika</h2>
+    <p class="modal-sub">Wypełnij formularz — oddzwonimy w ciągu 24 godzin, by potwierdzić termin.</p>
+    <form id="resForm" onsubmit="handleRes(event)" novalidate>
+      <div class="fg">
+        <label class="flbl" for="rName">Imię i nazwisko</label>
+        <input class="finp" type="text" id="rName" name="name" placeholder="Jan Kowalski" required autocomplete="name" minlength="2" maxlength="80">
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl" for="rDate">Data</label>
+          <input class="finp" type="date" id="rDate" name="date" required>
+        </div>
+        <div class="fg">
+          <label class="flbl" for="rTime">Godzina</label>
+          <input class="finp" type="time" id="rTime" name="time" min="12:00" max="23:00" value="19:00" required>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fg">
+          <label class="flbl" for="rGuests">Liczba gości</label>
+          <input class="finp" type="number" id="rGuests" name="guests" min="1" max="130" placeholder="2" required>
+        </div>
+        <div class="fg">
+          <label class="flbl" for="rPhone">Telefon</label>
+          <input class="finp" type="tel" id="rPhone" name="phone" placeholder="+48 000 000 000" required autocomplete="tel">
+        </div>
+      </div>
+      <div class="fg">
+        <label class="flbl" for="rNotes">Uwagi (opcjonalnie)</label>
+        <input class="finp" type="text" id="rNotes" name="notes" placeholder="Urodziny, alergie, życzenia specjalne…" maxlength="200">
+      </div>
+      <button type="submit" class="modal-sub-btn" id="resSubmit">Wyślij prośbę o rezerwację</button>
+    </form>
+    <p class="modal-note">Możesz też zadzwonić: <a href="tel:+48338581523">+48 33 858 15 23</a></p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div>
+        <img src="/images/logo_white.png" class="foot-logo" alt="Restauracja Trzech Braci" onerror="this.style.display='none'">
+        <div class="foot-brand">Restauracja Trzech Braci</div>
+        <p class="foot-desc">Kuchnia polsko-austriacka w sercu Cieszyna. Tradycja, smak i gościnność od 2002 roku — przy granicy polsko-czeskiej.</p>
+        <div class="foot-social">
+          <a href="https://www.facebook.com/trzechbraci" target="_blank" rel="noopener noreferrer" class="soc-lnk" aria-label="Facebook Restauracji Trzech Braci">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-ttl">Nawigacja</div>
+        <ul>
+          <li><a href="#o-nas">O restauracji</a></li>
+          <li><a href="#spec">Nasze specjalności</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#galeria">Galeria</a></li>
+          <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-ttl">Usługi</div>
+        <ul>
+          <li><a href="restauracja.html">Restauracja</a></li>
+          <li><a href="noclegi.html">Noclegi</a></li>
+          <li><a href="przyjecia.html">Przyjęcia</a></li>
+          <li><a href="wesela.html">Wesela</a></li>
+          <li><a href="catering.html">Catering</a></li>
+          <li><a href="wycieczki.html">Wycieczki</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-ttl">Kontakt</div>
+        <ul>
+          <li><a href="tel:+48338581523">+48 33 858 15 23</a></li>
+          <li><a href="tel:+48512484038">+48 512 484 038</a></li>
+          <li><a href="mailto:info@trzechbraci.pl">info@trzechbraci.pl</a></li>
+          <li class="addr">ul. Motelowa 1A<br>43-400 Cieszyn</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-btm">
+      <p class="foot-copy">© <em>2025</em> Restauracja Trzech Braci. Wszelkie prawa zastrzeżone.</p>
+      <p class="foot-copy">Cieszyn · Polska · <em>od 2002 roku</em></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ==============================
+   GLOBALS
+   ============================== */
+const isMobile = window.innerWidth < 768 ||
+  (navigator.hardwareConcurrency != null && navigator.hardwareConcurrency < 4);
+
+/* ==============================
+   NAVBAR
+   ============================== */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+}, { passive: true });
+
+/* ==============================
+   HAMBURGER
+   ============================== */
+const ham = document.getElementById('ham');
+const mob = document.getElementById('mobMenu');
+
+function closeMob() {
+  mob.classList.remove('open');
+  ham.classList.remove('open');
+  ham.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
+ham.addEventListener('click', () => {
+  const opening = !mob.classList.contains('open');
+  mob.classList.toggle('open', opening);
+  ham.classList.toggle('open', opening);
+  ham.setAttribute('aria-expanded', String(opening));
+  document.body.style.overflow = opening ? 'hidden' : '';
+});
+
+mob.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMob));
+
+/* ==============================
+   THREE.JS HERO
+   ============================== */
+(function initHero() {
+  if (isMobile) {
+    document.getElementById('heroFallback').style.display = 'block';
+    document.getElementById('hero-canvas').style.display = 'none';
+    return;
+  }
+
+  const canvas = document.getElementById('hero-canvas');
+  const W = () => canvas.clientWidth;
+  const H = () => canvas.clientHeight;
+
+  const scene    = new THREE.Scene();
+  scene.fog      = new THREE.FogExp2(0x0e1a0e, 0.06);
+  scene.background = new THREE.Color(0x0e1a0e);
+
+  const camera = new THREE.PerspectiveCamera(42, W() / H(), 0.1, 60);
+  camera.position.set(0, 1.8, 7.5);
+  camera.lookAt(0, 0.4, 0);
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(W(), H(), false);
+  renderer.shadowMap.enabled  = true;
+  renderer.shadowMap.type     = THREE.PCFSoftShadowMap;
+  renderer.toneMapping        = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.3;
+
+  /* Materials */
+  const matGold = new THREE.MeshStandardMaterial({
+    color: 0xc9a84c, metalness: 0.85, roughness: 0.18
+  });
+  const matPlate = new THREE.MeshStandardMaterial({
+    color: 0xddd8cc, metalness: 0.25, roughness: 0.45
+  });
+  const matDome = new THREE.MeshStandardMaterial({
+    color: 0xcccac2, metalness: 0.65, roughness: 0.3, side: THREE.DoubleSide
+  });
+
+  /* Geometries */
+  const group = new THREE.Group();
+
+  // Plate base
+  const pBase = new THREE.Mesh(new THREE.CylinderGeometry(2.1, 1.9, 0.13, 72), matPlate);
+  pBase.castShadow = pBase.receiveShadow = true;
+  group.add(pBase);
+
+  // Plate rim torus
+  const pRim = new THREE.Mesh(new THREE.TorusGeometry(2.05, 0.13, 16, 80), matGold);
+  pRim.rotation.x = Math.PI / 2;
+  pRim.position.y = 0.065;
+  group.add(pRim);
+
+  // Inner well
+  const pWell = new THREE.Mesh(new THREE.CylinderGeometry(1.42, 1.42, 0.05, 64), matPlate);
+  pWell.position.y = 0.09;
+  group.add(pWell);
+
+  // Decorative ring
+  const pDec = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.038, 8, 72), matGold);
+  pDec.rotation.x = Math.PI / 2;
+  pDec.position.y = 0.115;
+  group.add(pDec);
+
+  // Cloche dome
+  const dome = new THREE.Mesh(
+    new THREE.SphereGeometry(1.35, 36, 36, 0, Math.PI * 2, 0, Math.PI / 2),
+    matDome
+  );
+  dome.position.y = 0.13;
+  dome.castShadow = true;
+  group.add(dome);
+
+  // Dome base ring
+  const dRing = new THREE.Mesh(new THREE.TorusGeometry(1.35, 0.055, 8, 72), matGold);
+  dRing.rotation.x = Math.PI / 2;
+  dRing.position.y = 0.13;
+  group.add(dRing);
+
+  // Knob
+  const knob = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 16), matGold);
+  knob.position.y = 1.48;
+  knob.castShadow = true;
+  group.add(knob);
+
+  scene.add(group);
+
+  // Shadow plane
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(14, 14),
+    new THREE.MeshStandardMaterial({ color: 0x0a140a, roughness: 1, metalness: 0 })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -0.07;
+  floor.receiveShadow = true;
+  scene.add(floor);
+
+  /* Lights */
+  scene.add(new THREE.AmbientLight(0x1a2e1a, 1.1));
+
+  const key = new THREE.PointLight(0xff8833, 4, 14);
+  key.position.set(3.5, 5, 3.5);
+  key.castShadow = true;
+  key.shadow.mapSize.set(512, 512);
+  scene.add(key);
+
+  const fill = new THREE.PointLight(0xffd060, 2.2, 12);
+  fill.position.set(-4, 2.5, -2);
+  scene.add(fill);
+
+  const back = new THREE.PointLight(0x336633, 1.4, 10);
+  back.position.set(0, -1, 5);
+  scene.add(back);
+
+  /* Particles */
+  const pCount = 90;
+  const pPos   = new Float32Array(pCount * 3);
+  for (let i = 0; i < pCount; i++) {
+    pPos[i*3]   = (Math.random() - 0.5) * 16;
+    pPos[i*3+1] = (Math.random() - 0.5) * 9;
+    pPos[i*3+2] = (Math.random() - 0.5) * 16;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  const pts = new THREE.Points(pGeo, new THREE.PointsMaterial({
+    color: 0xc9a84c, size: 0.038, transparent: true, opacity: 0.38
+  }));
+  scene.add(pts);
+
+  /* Resize */
+  const onResize = () => {
+    camera.aspect = W() / H();
+    camera.updateProjectionMatrix();
+    renderer.setSize(W(), H(), false);
+  };
+  window.addEventListener('resize', onResize);
+
+  /* Animate — 60 fps cap */
+  let last = 0;
+  const FPS_INT = 1000 / 60;
+
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (now - last < FPS_INT) return;
+    last = now;
+    const t = now * 0.001;
+
+    group.rotation.y  = t * 0.28;
+    group.position.y  = Math.sin(t * 0.55) * 0.09;
+    key.intensity     = 4   + Math.sin(t * 3.9) * 0.35 + Math.sin(t * 7.3) * 0.12;
+    fill.intensity    = 2.2 + Math.sin(t * 2.1) * 0.22;
+    pts.rotation.y    = t * 0.048;
+    pts.rotation.x    = t * 0.018;
+
+    renderer.render(scene, camera);
+  }
+  requestAnimationFrame(tick);
+})();
+
+/* ==============================
+   GSAP HERO ENTRANCE
+   ============================== */
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.set(['#hEyebrow','#hTitle','#hSub','#hBtns'], { y: 28, opacity: 0 });
+gsap.set('#scrollInd', { opacity: 0 });
+
+gsap.timeline({ delay: 0.35 })
+  .to('#hEyebrow', { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' }, 0)
+  .to('#hTitle',   { opacity: 1, y: 0, duration: 1.0,  ease: 'power3.out' }, 0.18)
+  .to('#hSub',     { opacity: 1, y: 0, duration: 0.82, ease: 'power3.out' }, 0.45)
+  .to('#hBtns',    { opacity: 1, y: 0, duration: 0.8,  ease: 'power3.out' }, 0.65)
+  .to('#scrollInd',{ opacity: 1, duration: 0.6 }, 1.1);
+
+/* ==============================
+   DATA-REVEAL (IntersectionObserver)
+   ============================== */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const delay = parseFloat(e.target.dataset.d || 0) * 110;
+    setTimeout(() => e.target.classList.add('vis'), delay);
+    io.unobserve(e.target);
+  });
+}, { threshold: 0.11 });
+
+document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+
+/* ==============================
+   SPEC CARDS — 3D TILT
+   ============================== */
+document.querySelectorAll('.spec-card').forEach(card => {
+  let tX = 0, tY = 0, cX = 0, cY = 0, raf = null, over = false;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function tick() {
+    cX = lerp(cX, tX, 0.1);
+    cY = lerp(cY, tY, 0.1);
+    card.style.transform =
+      `perspective(800px) rotateX(${cX.toFixed(3)}deg) rotateY(${cY.toFixed(3)}deg) translateZ(${over ? 8 : 0}px)`;
+    if (over || Math.abs(cX) > 0.05 || Math.abs(cY) > 0.05) {
+      raf = requestAnimationFrame(tick);
+    } else {
+      card.style.transform = '';
+      raf = null;
+    }
+  }
+
+  card.addEventListener('mouseenter', () => { over = true; });
+
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    tX = -((e.clientY - r.top)  / r.height - 0.5) * 13;
+    tY =  ((e.clientX - r.left) / r.width  - 0.5) * 13;
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+
+  card.addEventListener('mouseleave', () => {
+    over = false;
+    tX = 0; tY = 0;
+    if (!raf) raf = requestAnimationFrame(tick);
+  });
+});
+
+/* ==============================
+   USLUGI HORIZONTAL SCROLL
+   ============================== */
+if (!isMobile) {
+  const track = document.getElementById('uslugiTrack');
+  ScrollTrigger.refresh();
+
+  gsap.to(track, {
+    x: () => -(track.scrollWidth - track.parentElement.clientWidth + 40),
+    ease: 'none',
+    scrollTrigger: {
+      trigger: '#uslugi',
+      pin: true,
+      scrub: 0.8,
+      start: 'top top',
+      end: () => `+=${track.scrollWidth - window.innerWidth + 200}`,
+      invalidateOnRefresh: true,
+    }
+  });
+}
+
+/* ==============================
+   FLIP CARDS — keyboard support
+   ============================== */
+document.querySelectorAll('.flip-wrap').forEach(wrap => {
+  wrap.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const link = wrap.querySelector('.flip-back');
+      if (link) window.open(link.href, '_blank', 'noopener,noreferrer');
+    }
+  });
+});
+
+/* ==============================
+   GALLERY PLACEHOLDERS
+   ============================== */
+const PALETTE = [
+  ['#1a3a1a','#2d4a2d','rgba(201,168,76,0.28)'],
+  ['#243824','#1a2e1a','rgba(201,168,76,0.18)'],
+  ['#0e1a0e','#1a3a1a','rgba(201,168,76,0.38)'],
+  ['#2d4a2d','#243824','rgba(201,168,76,0.14)'],
+  ['#1a2e1a','#0e1a0e','rgba(201,168,76,0.22)'],
+  ['#243824','#2d4a2d','rgba(201,168,76,0.18)'],
+];
+
+document.querySelectorAll('.gal-ph').forEach(cv => {
+  const idx = parseInt(cv.dataset.ph, 10);
+  const [c1, c2, c3] = PALETTE[idx % PALETTE.length];
+  const ctx = cv.getContext('2d');
+  const w = cv.width, h = cv.height;
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0, c1); g.addColorStop(0.6, c2); g.addColorStop(1, c3);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = 'rgba(201,168,76,0.09)';
+  ctx.lineWidth = 1;
+  for (let y = 0; y < h; y += 22) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  ctx.fillStyle = 'rgba(201,168,76,0.14)';
+  ctx.font = `${Math.min(w,h)*0.14}px serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('📷', w/2, h/2);
+});
+
+// Show placeholder when real image fails
+document.querySelectorAll('.gal-item img').forEach(img => {
+  img.addEventListener('error', () => {
+    img.style.display = 'none';
+    const ph = img.parentElement.querySelector('.gal-ph');
+    if (ph) ph.style.display = 'block';
+  });
+});
+
+/* ==============================
+   LIGHTBOX
+   ============================== */
+const lbox     = document.getElementById('lbox');
+const lboxImg  = document.getElementById('lboxImg');
+const lboxCls  = document.getElementById('lboxClose');
+
+function openLbox(src, alt) {
+  lboxImg.src = src;
+  lboxImg.alt = alt || 'Zdjęcie z galerii';
+  lbox.classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLbox() {
+  lbox.classList.remove('on');
+  document.body.style.overflow = '';
+  setTimeout(() => { lboxImg.src = ''; }, 260);
+}
+
+document.querySelectorAll('.gal-item[data-lb]').forEach(item => {
+  const open = () => {
+    const alt = item.querySelector('img')?.alt || '';
+    openLbox(item.dataset.lb, alt);
+  };
+  item.addEventListener('click', open);
+  item.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+  });
+});
+
+lbox.addEventListener('click', e => { if (e.target === lbox) closeLbox(); });
+lboxCls.addEventListener('click', closeLbox);
+
+/* ==============================
+   MODAL
+   ============================== */
+const modalOv = document.getElementById('modalOv');
+
+function openModal() {
+  modalOv.classList.add('on');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('rName').focus(), 80);
+}
+
+function closeModal() {
+  modalOv.classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+modalOv.addEventListener('click', e => { if (e.target === modalOv) closeModal(); });
+
+function handleRes(e) {
+  e.preventDefault();
+  const btn = document.getElementById('resSubmit');
+  // Basic validation
+  const name   = document.getElementById('rName').value.trim();
+  const phone  = document.getElementById('rPhone').value.trim();
+  const guests = parseInt(document.getElementById('rGuests').value, 10);
+  if (!name || !phone || isNaN(guests) || guests < 1) return;
+
+  btn.textContent = 'Wysyłanie…';
+  btn.disabled    = true;
+
+  setTimeout(() => {
+    btn.textContent = '✓ Prośba wysłana!';
+    btn.style.background = '#2a6a2a';
+    setTimeout(() => {
+      e.target.reset();
+      closeModal();
+      btn.textContent        = 'Wyślij prośbę o rezerwację';
+      btn.disabled           = false;
+      btn.style.background   = '';
+    }, 2200);
+  }, 900);
+}
+
+/* ==============================
+   GLOBAL ESCAPE KEY
+   ============================== */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  closeMob();
+  closeModal();
+  closeLbox();
+});
+
+/* ==============================
+   SET MIN DATE ON RESERVATION
+   ============================== */
+(function() {
+  const d = document.getElementById('rDate');
+  if (!d) return;
+  const today = new Date();
+  const yyyy  = today.getFullYear();
+  const mm    = String(today.getMonth() + 1).padStart(2, '0');
+  const dd    = String(today.getDate()).padStart(2, '0');
+  d.min   = `${yyyy}-${mm}-${dd}`;
+  d.value = `${yyyy}-${mm}-${dd}`;
+})();
+</script>
+</body>
+</html>

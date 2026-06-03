@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Wycieczki i turystyka Cieszyn — Trzech Braci. Poznaj Śląsk Cieszyński. Noclegi, restauracja i baza wypadowa do Cieszyna, Beskidów i czeskiego Těšína.">
+<title>Wycieczki | Trzech Braci Cieszyn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1a0e;--bg-2:#1a2e1a;--bg-3:#243824;--border:rgba(201,168,76,0.18);--text:#f5f0e8;--text-2:rgba(245,240,232,0.65);--text-3:rgba(245,240,232,0.32);--accent:#c9a84c;--cream:#f5f0e8;--shadow-sm:0 2px 8px rgba(0,0,0,0.3);--shadow-md:0 4px 24px rgba(0,0,0,0.4),0 0 40px rgba(201,168,76,0.08);--shadow-lg:0 8px 48px rgba(0,0,0,0.5);--r-sm:8px;--r-md:16px;--r-lg:24px;--font-h:'Playfair Display',Georgia,serif;--font-b:'Lato',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);line-height:1.7;overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}a{color:inherit;text-decoration:none}button{font-family:var(--font-b);cursor:pointer}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:0.022;mix-blend-mode:overlay}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:22px clamp(20px,5vw,80px);transition:background .4s,padding .3s,border-color .4s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(10,18,10,.92);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);padding:14px clamp(20px,5vw,80px);border-color:var(--border)}
+.nav-logo{display:flex;align-items:center;gap:12px}.nav-logo img{height:44px;width:auto}
+.nav-logo-txt{font-family:var(--font-h);font-size:1rem;font-weight:600;color:var(--cream);line-height:1.2}
+.nav-logo-txt small{display:block;font-family:var(--font-b);font-size:.65rem;font-weight:300;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none}
+.nav-links a{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--text-2);position:relative;transition:color .2s}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--accent);transition:width .3s cubic-bezier(.22,1,.36,1)}
+.nav-links a:hover{color:var(--cream)}.nav-links a:hover::after{width:100%}
+.nav-cta{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;padding:9px 22px;background:transparent;border:1.5px solid var(--accent);border-radius:var(--r-sm);color:var(--accent);position:relative;overflow:hidden;transition:color .3s}
+.nav-cta::before{content:'';position:absolute;inset:0;background:var(--accent);transform:translateX(-101%);transition:transform .3s cubic-bezier(.22,1,.36,1)}
+.nav-cta:hover{color:var(--bg)}.nav-cta:hover::before{transform:translateX(0)}.nav-cta span{position:relative;z-index:1}
+.hamburger{display:none;flex-direction:column;gap:5px;padding:8px;background:none;border:none;cursor:pointer}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--cream);transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .2s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,5px)}.hamburger.open span:nth-child(2){opacity:0}.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-5px)}
+.mob-menu{display:none;position:fixed;inset:0;z-index:999;background:rgba(8,14,8,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:36px}
+.mob-menu.open{display:flex}.mob-menu a{font-family:var(--font-h);font-size:1.9rem;font-weight:600;color:var(--cream);transition:color .2s}
+.mob-menu a:hover{color:var(--accent)}.mob-menu .mob-tel{color:var(--accent);font-family:var(--font-b);font-size:1rem;letter-spacing:.08em}
+.subhero{position:relative;padding:clamp(140px,18vw,200px) clamp(20px,6vw,120px) clamp(80px,10vw,120px);min-height:62vh;display:flex;align-items:center;overflow:hidden}
+.shbg{position:absolute;inset:0}
+.shbg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 75% 80% at 80% 15%,rgba(201,168,76,.14) 0%,transparent 55%),radial-gradient(ellipse 60% 70% at 10% 85%,rgba(10,36,14,.85) 0%,transparent 55%),var(--bg-2)}
+.shbg .gl{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:64px 64px}
+.shbg::after{content:'';position:absolute;bottom:0;left:0;right:0;height:45%;background:linear-gradient(to bottom,transparent,var(--bg))}
+.shcontent{position:relative;z-index:1;max-width:800px}
+.crumb{display:flex;align-items:center;gap:8px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:20px}
+.crumb a{color:var(--text-3);transition:color .2s}.crumb a:hover{color:var(--accent)}
+.sh-title{font-family:var(--font-h);font-size:clamp(2.4rem,5.5vw,5rem);font-weight:700;line-height:1.08;letter-spacing:-.025em;color:var(--cream);margin-bottom:16px}
+.sh-title em{font-style:italic;color:var(--accent)}
+.sh-sub{font-size:clamp(.9rem,1.8vw,1.05rem);color:var(--text-2);max-width:560px;line-height:1.7;margin-bottom:32px}
+.sh-btns{display:flex;gap:14px;flex-wrap:wrap}
+.sec-label{font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sec-title{font-family:var(--font-h);font-size:clamp(1.9rem,4vw,3rem);font-weight:700;line-height:1.14;letter-spacing:-.022em;color:var(--cream);margin-bottom:18px}
+.sec-title em{font-style:italic;color:var(--accent)}
+.sec-body{font-size:.97rem;line-height:1.82;color:var(--text-2);max-width:580px}
+.divider{width:52px;height:2px;background:linear-gradient(90deg,var(--accent),transparent);margin:22px 0}
+[data-reveal]{opacity:0;transform:translateY(30px);transition:opacity .85s cubic-bezier(.22,1,.36,1),transform .85s cubic-bezier(.22,1,.36,1)}
+[data-reveal].vis{opacity:1;transform:none}[data-reveal][data-d="1"]{transition-delay:.1s}[data-reveal][data-d="2"]{transition-delay:.22s}[data-reveal][data-d="3"]{transition-delay:.36s}[data-reveal][data-d="4"]{transition-delay:.5s}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;background:var(--accent);color:var(--bg);font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;border-radius:var(--r-sm);position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .3s}
+.btn-gold::after{content:'';position:absolute;top:-50%;left:-70%;width:40%;height:200%;background:rgba(255,255,255,.28);transform:skewX(-20deg);transition:left .55s cubic-bezier(.22,1,.36,1)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.45)}.btn-gold:hover::after{left:130%}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:15px 34px;background:transparent;color:var(--cream);font-size:.8rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(245,240,232,.28);border-radius:var(--r-sm);transition:border-color .3s,background .3s}
+.btn-outline:hover{border-color:var(--cream);background:rgba(245,240,232,.07)}
+.s1{padding:clamp(80px,10vw,120px) clamp(20px,6vw,120px);background:var(--bg)}
+.s2{padding:clamp(80px,10vw,120px) clamp(20px,6vw,120px);background:var(--bg-2)}
+.inner{max-width:1200px;margin:0 auto}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(48px,7vw,90px);align-items:center}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+.stat{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r-md);padding:22px;transition:border-color .3s}
+.stat:hover{border-color:rgba(201,168,76,.4)}.stat-n{font-family:var(--font-h);font-size:2rem;font-weight:700;color:var(--accent);line-height:1}.stat-l{font-size:.76rem;color:var(--text-2);margin-top:5px}
+.sights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sight-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.22,1,.36,1)}
+.sight-card:hover{border-color:rgba(201,168,76,.45);box-shadow:var(--shadow-md);transform:translateY(-5px)}
+.sight-icon{font-size:2.4rem;margin-bottom:14px}
+.sight-title{font-family:var(--font-h);font-size:1.2rem;font-weight:700;color:var(--cream);margin-bottom:8px}
+.sight-txt{font-size:.88rem;line-height:1.68;color:var(--text-2)}
+.base-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(48px,7vw,90px);align-items:center}
+.feat-list{list-style:none;display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.feat-list li{display:flex;align-items:center;gap:16px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r-md);padding:16px 20px;transition:border-color .3s}
+.feat-list li:hover{border-color:rgba(201,168,76,.4)}
+.feat-list .fi{font-size:1.8rem;flex-shrink:0}
+.feat-list .ft{font-size:.9rem;font-weight:700;color:var(--cream)}
+.feat-list .fs{font-size:.78rem;color:var(--text-2)}
+.pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.pkg-card{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--r-lg);padding:36px 32px;transition:border-color .3s,box-shadow .3s,transform .35s cubic-bezier(.22,1,.36,1)}
+.pkg-card:hover{border-color:rgba(201,168,76,.45);box-shadow:var(--shadow-md);transform:translateY(-4px)}
+.pkg-icon{font-size:2.8rem;margin-bottom:16px}
+.pkg-name{font-family:var(--font-h);font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:10px}
+.pkg-desc{font-size:.92rem;line-height:1.7;color:var(--text-2);margin-bottom:18px}
+.pkg-includes{list-style:none;display:flex;flex-direction:column;gap:7px}
+.pkg-includes li{font-size:.85rem;color:var(--text-2);display:flex;align-items:center;gap:8px}
+.pkg-includes li::before{content:'✓';color:var(--accent);font-weight:700;font-size:.8rem}
+.pkg-note{background:rgba(201,168,76,.07);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 20px;font-size:.84rem;color:var(--text-2);text-align:center;margin-top:22px}
+.cta-sec{padding:clamp(80px,10vw,120px) clamp(20px,6vw,120px);text-align:center;background:var(--bg);position:relative;overflow:hidden}
+.cta-sec::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 50%,rgba(201,168,76,.09) 0%,transparent 60%)}
+.cta-sec>*{position:relative;z-index:1}.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+footer{background:var(--bg);border-top:1px solid var(--border);padding:clamp(44px,8vw,80px) clamp(20px,6vw,120px) clamp(28px,4vw,44px)}
+.foot-inner{max-width:1200px;margin:0 auto}.foot-top{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:44px;margin-bottom:44px;padding-bottom:44px;border-bottom:1px solid var(--border)}
+.foot-logo-img{height:50px;margin-bottom:14px}.foot-brand{font-family:var(--font-h);font-size:1.1rem;font-weight:700;color:var(--cream);margin-bottom:10px}.foot-desc{font-size:.83rem;color:var(--text-2);line-height:1.72;max-width:270px}.foot-social{display:flex;gap:10px;margin-top:22px}
+.soc-lnk{width:38px;height:38px;background:rgba(201,168,76,.07);border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text-2);transition:background .2s,border-color .2s,color .2s,transform .2s}
+.soc-lnk:hover{background:rgba(201,168,76,.14);border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+.foot-col-ttl{font-size:.67rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:18px}.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}.foot-col ul a{font-size:.88rem;color:var(--text-2);transition:color .2s}.foot-col ul a:hover{color:var(--cream)}.foot-col ul li.addr{font-size:.82rem;color:var(--text-3);line-height:1.6;cursor:default}
+.foot-btm{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.foot-copy{font-size:.78rem;color:var(--text-3)}.foot-copy em{font-style:normal;color:var(--accent)}
+@media(max-width:1024px){.foot-top{grid-template-columns:1fr 1fr}.sights-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.nav-links,.nav-cta{display:none}.hamburger{display:flex}.split{grid-template-columns:1fr}.sights-grid{grid-template-columns:1fr}.base-grid{grid-template-columns:1fr}.pkg-grid{grid-template-columns:1fr}.foot-top{grid-template-columns:1fr;gap:28px}}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav">
+  <a href="index.html" class="nav-logo"><img src="/images/logo_white.png" alt="Trzech Braci" onerror="this.style.display='none'"><div class="nav-logo-txt">Trzech Braci <small>Restauracja · Cieszyn</small></div></a>
+  <ul class="nav-links"><li><a href="index.html#o-nas">O nas</a></li><li><a href="index.html#spec">Specjalności</a></li><li><a href="index.html#menu">Menu</a></li><li><a href="index.html#uslugi">Usługi</a></li><li><a href="index.html#galeria">Galeria</a></li><li><a href="index.html#kontakt">Kontakt</a></li></ul>
+  <a href="tel:+48338581523" class="nav-cta"><span>Zadzwoń</span></a>
+  <button class="hamburger" id="ham" aria-label="Otwórz menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="index.html">Strona główna</a><a href="restauracja.html">Restauracja</a><a href="noclegi.html">Noclegi</a><a href="przyjecia.html">Przyjęcia</a><a href="wesela.html">Wesela</a><a href="catering.html">Catering</a><a href="wycieczki.html">Wycieczki</a>
+  <a href="tel:+48338581523" class="mob-tel">+48 33 858 15 23</a>
+</div>
+
+<section class="subhero">
+  <div class="shbg"><div class="gl"></div></div>
+  <div class="shcontent" data-reveal>
+    <nav class="crumb"><a href="index.html">Strona główna</a><span>/</span><span style="color:var(--accent)">Wycieczki</span></nav>
+    <h1 class="sh-title">Odkryj <em>Śląsk Cieszyński</em></h1>
+    <p class="sh-sub">Cieszyn i okolice — tysiąc lat historii, piękna przyroda, dwa kraje w jednym miejscu. Trzech Braci to Twoja baza wypadowa.</p>
+    <div class="sh-btns"><a href="noclegi.html" class="btn-gold">Zarezerwuj nocleg</a><a href="mailto:info@trzechbraci.pl" class="btn-outline">Napisz do nas</a></div>
+  </div>
+</section>
+
+<section class="s1">
+  <div class="inner">
+    <div class="split">
+      <div data-reveal>
+        <p class="sec-label">Miasto pogranicza</p>
+        <h2 class="sec-title">Cieszyn —<br><em>Perła Śląska</em></h2>
+        <div class="divider"></div>
+        <p class="sec-body">Cieszyn to jedno z najpiękniejszych miast Górnego Śląska — historyczne miasto na granicy polsko-czeskiej z ponad tysiącletnią historią. Po polskiej stronie rozciąga się malownicze Stare Miasto z zamkiem piastowskim, kościołami i urokliwymi uliczkami. Tuż za Mostem Przyjaźni leży czeskie Český Těšín.</p>
+        <p class="sec-body" style="margin-top:14px">Restauracja Trzech Braci to idealna baza dla turystów eksplorujących ten wyjątkowy region pogranicza i całego Śląska Cieszyńskiego. Komfortowe pokoje, śniadanie i pełna restauracja czekają na Twój powrót z wycieczki.</p>
+        <div class="stats" data-reveal data-d="2">
+          <div class="stat"><div class="stat-n">~1000</div><div class="stat-l">Lat historii Cieszyna</div></div>
+          <div class="stat"><div class="stat-n">2</div><div class="stat-l">Kraje — PL i CZ</div></div>
+          <div class="stat"><div class="stat-n">25</div><div class="stat-l">Miejsc noclegowych</div></div>
+          <div class="stat"><div class="stat-n">2 min</div><div class="stat-l">Do granicy czeskiej</div></div>
+        </div>
+      </div>
+      <div data-reveal data-d="2" style="position:relative;height:clamp(400px,48vw,560px);border-radius:var(--r-lg);overflow:hidden;background:linear-gradient(135deg,#0e1a0e 0%,#1a3a1a 40%,rgba(201,168,76,.12) 100%);box-shadow:var(--shadow-lg)">
+        <img src="/images/homeslider/trzechbraci-homeslider-2022-1.jpg" alt="Widok na Cieszyn" loading="lazy" style="width:100%;height:100%;object-fit:cover;mix-blend-mode:luminosity;opacity:.55">
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(14,26,14,.75) 100%)"></div>
+        <div style="position:absolute;bottom:28px;left:28px;right:28px;z-index:2">
+          <div style="font-family:var(--font-h);font-size:1.3rem;font-weight:700;color:var(--cream);margin-bottom:4px">Cieszyn</div>
+          <div style="font-size:.82rem;color:var(--accent)">Miasto na styku kultur i granic</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s2">
+  <div class="inner">
+    <div style="text-align:center;margin-bottom:clamp(44px,6vw,72px)" data-reveal>
+      <p class="sec-label">Atrakcje regionu</p>
+      <h2 class="sec-title">Co Warto <em>Zobaczyć</em></h2>
+      <div class="divider" style="margin:22px auto"></div>
+      <p style="color:var(--text-2);max-width:500px;margin:0 auto;font-size:.96rem">Śląsk Cieszyński to region pełen niespodzianek — historia, natura i aktywny wypoczynek czekają na Ciebie tuż za progiem.</p>
+    </div>
+    <div class="sights-grid">
+      <div class="sight-card" data-reveal data-d="1"><div class="sight-icon">🏰</div><h3 class="sight-title">Zamek Cieszyn</h3><p class="sight-txt">XIII-wieczna rotunda św. Mikołaja i wieża Piastowska z panoramą miasta i okolic. Jedno z najcenniejszych historycznych miejsc Śląska.</p></div>
+      <div class="sight-card" data-reveal data-d="2"><div class="sight-icon">🌉</div><h3 class="sight-title">Most Przyjaźni</h3><p class="sight-txt">Słynny most na Olzie łączący Polskę i Czechy. Wyjątkowe doświadczenie spaceru między dwoma krajami — bez paszportu, bez granic.</p></div>
+      <div class="sight-card" data-reveal data-d="3"><div class="sight-icon">⛪</div><h3 class="sight-title">Stare Miasto</h3><p class="sight-txt">Rynek cieszyński z zabytkowymi kamienicami, kościołami i kawiarniami. Idealne na popołudniowy spacer i zakupy pamiątek regionalnych.</p></div>
+      <div class="sight-card" data-reveal data-d="1"><div class="sight-icon">🎿</div><h3 class="sight-title">Beskidy</h3><p class="sight-txt">Zimą stoki narciarskie w Wiśle, Szczyrku i Ustroniu. Latem szlaki piesze i rowerowe przez Beskid Śląski. Coś dla każdego przez cały rok.</p></div>
+      <div class="sight-card" data-reveal data-d="2"><div class="sight-icon">🚴</div><h3 class="sight-title">Szlaki Rowerowe</h3><p class="sight-txt">Rozbudowana sieć ścieżek rowerowych przez Śląsk Cieszyński, wzdłuż rzeki Olzy i przez urokliwe wioski pogranicza polsko-czeskiego.</p></div>
+      <div class="sight-card" data-reveal data-d="3"><div class="sight-icon">🏊</div><h3 class="sight-title">Rekreacja i Spa</h3><p class="sight-txt">Kryty basen i ośrodki SPA w pobliżu, Nordic Walking, kuligi zimą — dla rodzin i miłośników aktywnego, zdrowego wypoczynku.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="s1">
+  <div class="inner">
+    <div class="base-grid">
+      <div data-reveal>
+        <p class="sec-label">Baza wypadowa</p>
+        <h2 class="sec-title">Trzech Braci —<br>Twój <em>Dom w Cieszynie</em></h2>
+        <div class="divider"></div>
+        <p class="sec-body">Zamiast tracić czas na dojazdy, zostań z nami i ciesz się Cieszynem od rana do wieczora. Jesteśmy 5 minut od centrum, mamy bezpłatny parking i śniadanie czeka na Ciebie każdego ranka. Po dniu zwiedzania wróć do restauracji i odpręż się przy znakomitym jedzeniu.</p>
+      </div>
+      <ul class="feat-list" data-reveal data-d="2">
+        <li><span class="fi">📍</span><div><div class="ft">5 minut od centrum</div><div class="fs">Pieszo do Rynku i Zamku</div></div></li>
+        <li><span class="fi">🅿️</span><div><div class="ft">Bezpłatny parking</div><div class="fs">Dla wszystkich gości</div></div></li>
+        <li><span class="fi">🍳</span><div><div class="ft">Śniadanie w cenie</div><div class="fs">Dobry start każdego dnia</div></div></li>
+        <li><span class="fi">🌐</span><div><div class="ft">WiFi w pokojach</div><div class="fs">Planujesz, my się troszczymy</div></div></li>
+        <li><span class="fi">🍽️</span><div><div class="ft">Restauracja na miejscu</div><div class="fs">Kuchnia polsko-austriacka</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="s2">
+  <div class="inner">
+    <div style="text-align:center;margin-bottom:clamp(44px,6vw,72px)" data-reveal>
+      <p class="sec-label">Pakiety turystyczne</p>
+      <h2 class="sec-title">Pakiety dla <em>Turystów</em></h2>
+      <div class="divider" style="margin:22px auto"></div>
+    </div>
+    <div class="pkg-grid">
+      <div class="pkg-card" data-reveal data-d="1">
+        <div class="pkg-icon">🌆</div>
+        <div class="pkg-name">Weekend w Cieszynie</div>
+        <p class="pkg-desc">Dwudniowy pobyt z pełnym programem zwiedzania polskiego i czeskiego Cieszyna. Idealne dla par i turystów kulturowych.</p>
+        <ul class="pkg-includes"><li>2 noce z śniadaniem</li><li>Kolacja w restauracji</li><li>Mapa i plan zwiedzania</li><li>Parking bezpłatny</li></ul>
+      </div>
+      <div class="pkg-card" data-reveal data-d="2">
+        <div class="pkg-icon">🎿</div>
+        <div class="pkg-name">Aktywny Wypoczynek</div>
+        <p class="pkg-desc">Tygodniowy pobyt dla aktywnych — piesze wędrówki, rowery, narty lub snowboard. Dla rodzin i grup sportowych.</p>
+        <ul class="pkg-includes"><li>3–7 nocy z śniadaniem</li><li>Informacje o szlakach i stokach</li><li>Dostosowanie do sezonu</li><li>Parking bezpłatny</li></ul>
+      </div>
+    </div>
+    <div class="pkg-note" data-reveal data-d="3">Pakiety dostępne po wcześniejszym uzgodnieniu. Zadzwoń, by poznać szczegóły i sprawdzić dostępność.</div>
+  </div>
+</section>
+
+<section class="cta-sec">
+  <p class="sec-label">Zapraszamy</p>
+  <h2 class="sec-title" style="font-size:clamp(1.8rem,4vw,2.8rem)">Zaplanuj Wizytę<br>w <em>Cieszynie</em></h2>
+  <p style="color:var(--text-2);max-width:480px;margin:0 auto;font-size:.97rem">Zarezerwuj nocleg w Trzech Braci i odkryj piękno Śląska Cieszyńskiego. Czekamy na Ciebie.</p>
+  <div class="cta-btns"><a href="tel:+48338581523" class="btn-gold">Zarezerwuj nocleg</a><a href="mailto:info@trzechbraci.pl" class="btn-outline">Napisz do nas</a></div>
+</section>
+
+<footer><div class="foot-inner"><div class="foot-top"><div><img src="/images/logo_white.png" class="foot-logo-img" alt="Trzech Braci" onerror="this.style.display='none'"><div class="foot-brand">Restauracja Trzech Braci</div><p class="foot-desc">Kuchnia polsko-austriacka w sercu Cieszyna. Tradycja, smak i gościnność od 2002 roku.</p><div class="foot-social"><a href="https://www.facebook.com/trzechbraci" target="_blank" rel="noopener" class="soc-lnk" aria-label="Facebook"><svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a></div></div>
+<div class="foot-col"><div class="foot-col-ttl">Nawigacja</div><ul><li><a href="index.html#o-nas">O restauracji</a></li><li><a href="index.html#spec">Specjalności</a></li><li><a href="index.html#menu">Menu</a></li><li><a href="index.html#galeria">Galeria</a></li><li><a href="index.html#kontakt">Kontakt</a></li></ul></div>
+<div class="foot-col"><div class="foot-col-ttl">Usługi</div><ul><li><a href="restauracja.html">Restauracja</a></li><li><a href="noclegi.html">Noclegi</a></li><li><a href="przyjecia.html">Przyjęcia</a></li><li><a href="wesela.html">Wesela</a></li><li><a href="catering.html">Catering</a></li><li><a href="wycieczki.html">Wycieczki</a></li></ul></div>
+<div class="foot-col"><div class="foot-col-ttl">Kontakt</div><ul><li><a href="tel:+48338581523">+48 33 858 15 23</a></li><li><a href="tel:+48512484038">+48 512 484 038</a></li><li><a href="mailto:info@trzechbraci.pl">info@trzechbraci.pl</a></li><li class="addr">ul. Motelowa 1A<br>43-400 Cieszyn</li></ul></div></div>
+<div class="foot-btm"><p class="foot-copy">© <em>2025</em> Restauracja Trzech Braci. Wszelkie prawa zastrzeżone.</p><p class="foot-copy">Cieszyn · Polska · <em>od 2002 roku</em></p></div></div></footer>
+
+<script>
+'use strict';
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>50),{passive:true});
+const ham=document.getElementById('ham'),mob=document.getElementById('mobMenu');
+function closeMob(){mob.classList.remove('open');ham.classList.remove('open');ham.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+ham.addEventListener('click',()=>{const o=!mob.classList.contains('open');mob.classList.toggle('open',o);ham.classList.toggle('open',o);ham.setAttribute('aria-expanded',String(o));document.body.style.overflow=o?'hidden':'';});
+mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMob));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMob();});
+const io=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(!e.isIntersecting)return;const d=parseFloat(e.target.dataset.d||0)*110;setTimeout(()=>e.target.classList.add('vis'),d);io.unobserve(e.target);});},{threshold:0.11});
+document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
