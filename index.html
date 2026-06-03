@@ -372,7 +372,9 @@ footer{background:var(--bg);border-top:1px solid var(--border);
   .kont-map{height:290px}
   .gal-grid{columns:2}
   .foot-top{grid-template-columns:1fr;gap:28px}
-  .uslugi-track{overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .uslugi-track-wrap{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .uslugi-track-wrap::-webkit-scrollbar{display:none}
+  .uslugi-track{overflow-x:visible}
   .ucard{scroll-snap-align:start;width:78vw}
 }
 @media(max-width:480px){
